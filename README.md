@@ -51,7 +51,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 4. Reference voice file
+### 4. Create a project folder
+
+Create a new folder on your computer where all the project files will live. A few rules:
+- No spaces in the folder name (use `local-voice` not `local voice`)
+- Put it somewhere you can find easily — Desktop or Documents works fine
+- Remember where it is — you'll need to navigate to it in Terminal / PowerShell
+
+### 5. Reference voice file
 A 5–10 second audio clip of a voice you want the AI to clone.
 - Any format works: `.wav`, `.mp3`, `.m4a`
 - Clear speech, no background music
@@ -60,6 +67,13 @@ A 5–10 second audio clip of a voice you want the AI to clone.
 ---
 
 ## Installation
+
+Before running any commands, navigate Terminal / PowerShell into your project folder. Open Terminal / Powershell and type `cd` followed by a space, then drag your project folder into the Terminal / PowerShell window — the path will fill in automatically. Press Enter.
+
+```bash
+cd   # type this, add a space, then drag your folder in
+```
+hit enter
 
 ### macOS (Apple Silicon — M1/M2/M3)
 

@@ -139,7 +139,7 @@ uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
 
 ## Configuration
 
-Open whichever script you want to use using VS Code or any code editor of your choice. VS Code is recommended for my students. Change **lines 11–12** (terminal) or **lines 14–15** (gradio):
+Open local_voice_terminal.py or local_voice_gradio.py using VS Code or any code editor of your choice (VS Code is recommended for my students) Change **lines 11–12** (terminal) or **lines 14–15** (gradio):
 
 ```python
 OLLAMA_MODEL    = "john"             # ← your model name 

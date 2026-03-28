@@ -73,7 +73,6 @@ Before running any commands, navigate Terminal / PowerShell into your project fo
 ```bash
 cd   # type this, add a space, then drag your folder in
 ```
-hit enter
 
 ### macOS (Apple Silicon — M1/M2/M3)
 

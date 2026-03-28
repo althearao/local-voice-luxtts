@@ -83,7 +83,7 @@ Before running any commands, navigate Terminal / PowerShell into your project fo
 cd   # type this, add a space, then drag your folder in
 ```
 
-### macOS (Apple Silicon — M1/M2/M3)
+### macOS (Apple Silicon — M1/M2/M3/M4)
 
 Open **Terminal** and type the following commands one at a time:
 

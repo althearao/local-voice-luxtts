@@ -103,7 +103,7 @@ uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
 uv pip install -e LuxTTS/
 
 # 5. Install remaining dependencies
-uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+uv pip install "fastrtc[stt]==0.0.19" ollama "gradio==4.42.0" soundfile sounddevice
 
 # 6. Downgrade NumPy (must run last — fastrtc pulls in NumPy 2 which breaks torch)
 uv pip install "numpy<2"
@@ -134,7 +134,7 @@ uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
 uv pip install -e LuxTTS/
 
 # 6. Install remaining dependencies
-uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+uv pip install "fastrtc[stt]==0.0.19" ollama "gradio==4.42.0" soundfile sounddevice
 
 # 7. Downgrade NumPy (must run last — fastrtc pulls in NumPy 2 which breaks torch)
 uv pip install "numpy<2"

@@ -78,6 +78,8 @@ def ask_llm(user_text, history):
 def speak(text):
     if current_encoded["prompt"] is None:
         raise ValueError("No reference audio loaded. Please upload a reference voice file.")
+    if len(text.split()) < 4:
+        return None  # too short for TTS vocoder — skip silently
     wav = tts.generate_speech(
         text,
         encode_dict=current_encoded["prompt"],

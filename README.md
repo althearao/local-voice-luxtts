@@ -102,11 +102,11 @@ uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
 # 4. Install LuxTTS as a package
 uv pip install -e LuxTTS/
 
-# 5. Downgrade NumPy for torch compatibility
-uv pip install "numpy<2"
-
-# 6. Install remaining dependencies
+# 5. Install remaining dependencies
 uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+
+# 6. Downgrade NumPy (must run last — fastrtc pulls in NumPy 2 which breaks torch)
+uv pip install "numpy<2"
 ```
 
 ### Windows
@@ -133,11 +133,11 @@ uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
 # 5. Install LuxTTS as a package
 uv pip install -e LuxTTS/
 
-# 6. Downgrade NumPy for torch compatibility
-uv pip install "numpy<2"
-
-# 7. Install remaining dependencies
+# 6. Install remaining dependencies
 uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+
+# 7. Downgrade NumPy (must run last — fastrtc pulls in NumPy 2 which breaks torch)
+uv pip install "numpy<2"
 ```
 
 > **NVIDIA GPU (optional):** The scripts will automatically detect and use your GPU. No extra steps needed — torch installs CUDA support by default on Windows.

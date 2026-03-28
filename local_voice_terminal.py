@@ -47,6 +47,8 @@ def ask_llm(user_text):
 
 
 def speak(text):
+    if len(text.split()) < 4:
+        return  # too short for TTS vocoder — skip silently
     wav = tts.generate_speech(
         text,
         encode_dict=encoded_prompt,

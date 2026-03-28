@@ -105,29 +105,29 @@ uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
 Open **Command Prompt** or **PowerShell** and type the following commands one at a time:
 
 ```bat
-:: 1. Clone this repo
+# 1. Clone this repo
 git clone https://github.com/althearao/local-voice-luxtts
 cd local-voice-luxtts
 
-:: 2. Create isolated Python 3.12 environment
+# 2. Create isolated Python 3.12 environment
 uv venv --python 3.12 .venv
 
-:: 3. Activate the environment
-:: Command Prompt:
+# 3. Activate the environment
+# Command Prompt:
 .venv\Scripts\activate
-:: PowerShell:
-:: .venv\Scripts\Activate.ps1
+# PowerShell:
+# .venv\Scripts\Activate.ps1
 
-:: 4. Install LuxTTS dependencies
+# 4. Install LuxTTS dependencies
 uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
 
-:: 5. Install LuxTTS as a package
+# 5. Install LuxTTS as a package
 uv pip install -e LuxTTS/
 
-:: 6. Downgrade NumPy for torch compatibility
+# 6. Downgrade NumPy for torch compatibility
 uv pip install "numpy<2"
 
-:: 7. Install remaining dependencies
+# 7. Install remaining dependencies
 uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
 ```
 

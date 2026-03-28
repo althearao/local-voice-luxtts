@@ -25,7 +25,7 @@ This repo is developed for my course, How to be Human in the Age of AI, at SJSU.
 Open **Terminal** (Mac) or **PowerShell** (Windows) and type:
 
 ```bash
-ollama run //type your model name such as "john", "class_murmur"
+ollama run //type your model name such as john, class_murmur
 ```
 
 Hit enter. Keep Ollama running in the background while using the scripts.
@@ -142,7 +142,7 @@ uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
 Open whichever script you want to use and change **lines 11–12** (terminal) or **lines 14–15** (gradio):
 
 ```python
-OLLAMA_MODEL    = "llama3.2"             # ← your model name from `ollama list`
+OLLAMA_MODEL    = "john"             # ← your model name 
 REFERENCE_AUDIO = "./reference_voice.wav" # ← your voice file (any audio format)
 ```
 

@@ -193,3 +193,13 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Local Voice AI Agent — project-specific
+claude-local-voice/       # local Claude/AI working notes
+requirements-locked.txt   # platform-specific freeze, not for distribution
+tts_output.wav            # generated audio output
+error.txt                 # local debug logs
+reference_voice.*         # personal voice recordings — do not commit
+*.m4a
+*.mp3
+research.md               # development notes

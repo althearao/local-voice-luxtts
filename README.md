@@ -1,151 +1,289 @@
-# LuxTTS
-<p align="center">
-  <a href="https://huggingface.co/YatharthS/LuxTTS">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-FFD21E" alt="Hugging Face Model">
-  </a>
-  &nbsp;
-  <a href="https://huggingface.co/spaces/YatharthS/LuxTTS">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue" alt="Hugging Face Space">
-  </a>
-  &nbsp;
-  <a href="https://colab.research.google.com/drive/1cDaxtbSDLRmu6tRV_781Of_GSjHSo1Cu?usp=sharing">
-    <img src="https://img.shields.io/badge/Colab-Notebook-F9AB00?logo=googlecolab&logoColor=white" alt="Colab Notebook">
-  </a>
-</p>
+# Local Voice AI Agent
 
-LuxTTS is an lightweight zipvoice based text-to-speech model designed for high quality voice cloning and realistic generation at speeds exceeding 150x realtime.
+A fully local voice chatbot pipeline running on your own computer — no cloud, no API keys.
 
-https://github.com/user-attachments/assets/a3b57152-8d97-43ce-bd99-26dc9a145c29
-
-
-### The main features are
-- Voice cloning: SOTA voice cloning on par with models 10x larger.
-- Clarity: Clear 48khz speech generation unlike most TTS models which are limited to 24khz.
-- Speed: Reaches speeds of 150x realtime on a single GPU and faster then realtime on CPU's as well.
-- Efficiency: Fits within 1gb vram meaning it can fit in any local gpu.
-
-## Usage
-You can try it locally, colab, or spaces.
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1cDaxtbSDLRmu6tRV_781Of_GSjHSo1Cu?usp=sharing)
-[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/YatharthS/LuxTTS)
-
-#### Simple installation:
 ```
-git clone https://github.com/ysharma3501/LuxTTS.git
-cd LuxTTS
-pip install -r requirements.txt
+Microphone → STT (Moonshine) → LLM (Ollama) → TTS (LuxTTS) → Speaker
 ```
 
-#### Load model:
+Two scripts included:
+| Script | Description |
+|--------|-------------|
+| `local_voice_terminal.py` | Type text → LLM responds → plays audio |
+| `local_voice_gradio.py` | Browser UI: speak or type → STT → LLM → TTS |
+
+---
+
+This repo is developed for my course, How to be Human in the Age of AI, at SJSU. Prior to deploying this lab, students should have gone through the following lab exercises:
+
+- **Finetuning with Unsloth** with a bespoke dataset — the lab produces a `.gguf` file.
+- **Interacting with the finetuned model locally** — the lab teaches students to register the `.gguf` file with Ollama and interact with it using the command line tool.
+
+## Prerequisites
+
+### 1. Ollama
+Open **Terminal** (Mac) or **PowerShell** (Windows) and type:
+
+```bash
+ollama run mymodel
+```
+
+Hit enter. Keep Ollama running in the background while using the scripts.
+
+### 2. Homebrew (Mac only)
+If you don't have Homebrew already, open **Terminal** and run:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### 3. uv (package manager)
+
+**macOS** — open **Terminal** and type:
+```bash
+brew install uv
+# or:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows** — open **PowerShell** and type:
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### 4. Reference voice file
+A 5–10 second audio clip of a voice you want the AI to clone.
+- Any format works: `.wav`, `.mp3`, `.m4a`
+- Clear speech, no background music
+- Place it in the project folder and note the filename
+
+---
+
+## Installation
+
+### macOS (Apple Silicon — M1/M2/M3)
+
+Open **Terminal** and type the following commands one at a time:
+
+```bash
+# 1. Clone this repo
+git clone https://github.com/althearao/local-voice-luxtts
+cd local-voice-luxtts
+
+# 2. Create isolated Python 3.12 environment
+uv venv --python 3.12 .venv
+source .venv/bin/activate
+
+# 3. Install LuxTTS dependencies (pinned for compatibility)
+uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
+
+# 4. Install LuxTTS as a package
+uv pip install -e LuxTTS/
+
+# 5. Downgrade NumPy for torch compatibility
+uv pip install "numpy<2"
+
+# 6. Install remaining dependencies
+uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+```
+
+### Windows
+
+Open **Command Prompt** or **PowerShell** and type the following commands one at a time:
+
+```bat
+:: 1. Clone this repo
+git clone https://github.com/althearao/local-voice-luxtts
+cd local-voice-luxtts
+
+:: 2. Create isolated Python 3.12 environment
+uv venv --python 3.12 .venv
+
+:: 3. Activate the environment
+:: Command Prompt:
+.venv\Scripts\activate
+:: PowerShell:
+:: .venv\Scripts\Activate.ps1
+
+:: 4. Install LuxTTS dependencies
+uv pip install -r LuxTTS/requirements.txt "numba<0.62" "llvmlite<0.46"
+
+:: 5. Install LuxTTS as a package
+uv pip install -e LuxTTS/
+
+:: 6. Downgrade NumPy for torch compatibility
+uv pip install "numpy<2"
+
+:: 7. Install remaining dependencies
+uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
+```
+
+> **NVIDIA GPU (optional):** The scripts will automatically detect and use your GPU. No extra steps needed — torch installs CUDA support by default on Windows.
+
+> **No GPU:** CPU inference works fine, TTS generation will just be slower (~5–15 seconds per response instead of ~1–3 seconds).
+
+---
+
+## Configuration
+
+Open whichever script you want to use and change **lines 11–12** (terminal) or **lines 14–15** (gradio):
+
 ```python
-from zipvoice.luxvoice import LuxTTS
-
-# load model on GPU
-lux_tts = LuxTTS('YatharthS/LuxTTS', device='cuda')
-
-# load model on CPU
-# lux_tts = LuxTTS('YatharthS/LuxTTS', device='cpu', threads=2)
-
-# load model on MPS for macs
-# lux_tts = LuxTTS('YatharthS/LuxTTS', device='mps')
+OLLAMA_MODEL    = "llama3.2"             # ← your model name from `ollama list`
+REFERENCE_AUDIO = "./reference_voice.wav" # ← your voice file (any audio format)
 ```
 
-#### Simple inference
-```python
-import soundfile as sf
-from IPython.display import Audio
+That's the only change required.
 
-text = "Hey, what's up? I'm feeling really great if you ask me honestly!"
+---
 
-## change this to your reference file path, can be wav/mp3
-prompt_audio = 'audio_file.wav'
+## Running
 
-## encode audio(takes 10s to init because of librosa first time)
-encoded_prompt = lux_tts.encode_prompt(prompt_audio, rms=0.01)
+Make sure your virtual environment is active (`source .venv/bin/activate` on Mac, `.venv\Scripts\activate` on Windows) before running.
 
-## generate speech
-final_wav = lux_tts.generate_speech(text, encoded_prompt, num_steps=4)
+### Terminal version (no browser needed)
+Open **Terminal** (Mac) or **PowerShell** (Windows) and type:
+```bash
+python local_voice_terminal.py
+```
+Type a message and press Enter. The AI responds in text and speaks the reply.
+`Ctrl+C` to quit.
 
-## save audio
-final_wav = final_wav.numpy().squeeze()
-sf.write('output.wav', final_wav, 48000)
+### Gradio version (browser UI with microphone)
+Open **Terminal** (Mac) or **PowerShell** (Windows) and type:
+```bash
+python local_voice_gradio.py
+```
+Open **http://127.0.0.1:7860** in your browser.
 
-## display speech
-if display is not None:
-  display(Audio(final_wav, rate=48000))
+- **Upload Reference Audio** — click the upload box and select your voice file (or place `reference_voice.wav` in the project folder to skip this step)
+- **Speak** — click the microphone, speak, release — the AI responds in your cloned voice
+- **Or type** — use the text box and hit Send
+
+---
+
+## First-run notes
+
+- **LuxTTS model download:** On first run, LuxTTS downloads ~1 GB of model weights from HuggingFace. This only happens once and is cached for future runs. The progress bar (`Fetching 11 files`) is normal.
+- **Warnings are normal:** Messages about `k2`, `FNV hashing`, and deprecated Whisper flags appear on every run — they don't affect functionality.
+
+---
+
+## Troubleshooting
+
+**`ERROR: Cannot connect to Ollama`**
+Ollama isn't running. Start it:
+```bash
+ollama serve    # Mac / Linux
+# On Windows: Ollama runs as a background service after install — check the system tray
 ```
 
-#### Inference with sampling params:
-```python
-import soundfile as sf
-from IPython.display import Audio
-
-text = "Hey, what's up? I'm feeling really great if you ask me honestly!"
-
-## change this to your reference file path, can be wav/mp3
-prompt_audio = 'audio_file.wav'
-
-rms = 0.01 ## higher makes it sound louder(0.01 or so recommended)
-t_shift = 0.9 ## sampling param, higher can sound better but worse WER
-num_steps = 4 ## sampling param, higher sounds better but takes longer(3-4 is best for efficiency)
-speed = 1.0 ## sampling param, controls speed of audio(lower=slower)
-return_smooth = False ## sampling param, makes it sound smoother possibly but less cleaner
-ref_duration = 5 ## Setting it lower can speedup inference, set to 1000 if you find artifacts.
-
-## encode audio(takes 10s to init because of librosa first time)
-encoded_prompt = lux_tts.encode_prompt(prompt_audio, duration=ref_duration, rms=rms)
-
-## generate speech
-final_wav = lux_tts.generate_speech(text, encoded_prompt, num_steps=num_steps, t_shift=t_shift, speed=speed, return_smooth=return_smooth)
-
-## save audio
-final_wav = final_wav.numpy().squeeze()
-sf.write('output.wav', final_wav, 48000)
-
-## display speech
-if display is not None:
-  display(Audio(final_wav, rate=48000))
+**`LLM error: model not found`**
+Your `OLLAMA_MODEL` name doesn't match what's installed. Check with:
+```bash
+ollama list
 ```
-## Tips
-- Please use at minimum a 3 second audio file for voice cloning.
-- You can use return_smooth = True if you hear metallic sounds.
-- Lower t_shift for less possible pronunciation errors but worse quality and vice versa.
+Model names are case-sensitive. Use the exact name shown.
 
-## Community
-- [Lux-TTS-Gradio](https://github.com/NidAll/LuxTTS-Gradio): A gradio app to use LuxTTS.
-- [OptiSpeech](https://github.com/ycharfi09/OptiClone): Clean UI app to use LuxTTS.
-- [LuxTTS-Comfyui](https://github.com/DragonDiffusionbyBoyo/BoyoLuxTTS-Comfyui.git): Nodes to use LuxTTS in comfyui.
+**`No reference audio loaded`** (Gradio)
+Upload a voice file using the Upload Reference Audio box at the top of the UI, or place a file named `reference_voice.wav` in the project folder before starting.
 
-Thanks to all community contributions!
+**`ModuleNotFoundError: No module named 'zipvoice'`**
+LuxTTS wasn't installed as a package. Run:
+```bash
+uv pip install -e LuxTTS/
+```
 
-## Info
+**`_ARRAY_API not found` or NumPy error**
+NumPy 2.x is incompatible with torch 2.4.x. Run:
+```bash
+uv pip install "numpy<2"
+```
 
-Q: How is this different from ZipVoice?
+**Windows: `.venv\Scripts\Activate.ps1` blocked by PowerShell**
+Run this once to allow local scripts:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-A: LuxTTS uses the same architecture but distilled to 4 steps with an improved sampling technique. It also uses a custom 48khz vocoder instead of the default 24khz version.
+**Audio doesn't play (terminal version)**
+Make sure your system's default audio output is set. On Mac, check System Settings → Sound. On Windows, check the taskbar speaker icon.
 
-Q: Can it be even faster?
+---
 
-A: Yes, currently it uses float32. Float16 should be significantly faster(almost 2x).
+## Project structure
 
-## Roadmap
+```
+local-voice-luxtts/
+├── local_voice_terminal.py   # Terminal chatbot
+├── local_voice_gradio.py     # Gradio browser UI
+├── LuxTTS/                   # Patched LuxTTS (MPS + gradio fixes included)
+├── requirements-locked.txt   # Exact locked versions (for reference)
+└── README.md
+```
 
-- [x] Release model and code
-- [x] Huggingface spaces demo
-- [x] Release MPS support (thanks to @builtbybasit)
-- [ ] Release LuxTTS v1.5
-- [ ] Release code for float16 inference
+> **Note on LuxTTS:** This repo includes a patched copy of [LuxTTS](https://github.com/ysharma3501/LuxTTS) with fixes for Apple Silicon MPS compatibility and a gradio_client schema bug. You do not need to clone the original LuxTTS repo separately.
 
-## Acknowledgments
+---
 
-- [ZipVoice](https://github.com/k2-fsa/ZipVoice) for their excellent code and model.
-- [Vocos](https://github.com/gemelo-ai/vocos.git) for their great vocoder.
-  
-## Final Notes
+## Hardware tested
 
-The model and code are licensed under the Apache-2.0 license. See LICENSE for details.
+| Platform | Status |
+|----------|--------|
+| Apple Silicon (M1/M2/M3) | ✅ Tested |
+| Windows (NVIDIA GPU) | ✅ Expected to work |
+| Windows (CPU only) | ✅ Expected to work (slower TTS) |
+| Intel Mac | ⚠️ Requires Python 3.12; torch limited to 2.4.1 |
 
-Stars/Likes would be appreciated, thank you.
+---
 
-Email: yatharthsharma350@gmail.com
+## How voice cloning works
+
+The pipeline uses three pieces of technology stacked together.
+
+**LuxTTS** is an open-source project by Yatharth Sharma that wraps a research model called **ZipVoice** — https://arxiv.org/abs/2506.13053 a 2025 paper from Xiaomi Corporation, authored by Han Zhu, Wei Kang, Zengwei Yao, and others including Daniel Povey (one of the most cited speech researchers in the world, also creator of the Kaldi toolkit). The audio output stage uses **Vocos**, a vocoder by Hubert Siuzdak published at ICLR 2024 https://arxiv.org/abs/2306.00814.
+
+### How it works in plain language
+
+Think of it as four stages: **listening**, **learning to speak**, **sculpting sound**, and **converting to audio**.
+
+**Stage 1 — Listening to the reference voice.**
+You hand the system a short clip (3–10 seconds). Instead of memorizing the recording, the system extracts a *vocal fingerprint* — a list of numbers describing the timbre, resonance, breath texture, and rhythm unique to that voice.
+
+**Stage 2 — Learning language as shape.**
+ZipVoice was trained on 100,000 hours of multilingual speech. From that, it learned that language has physical shape — syllables have duration, pitch curves, energy patterns. It uses a neural network called a Zipformer to turn your text into a blueprint: *this word should be long, this one short, this one rising.*
+
+**Stage 3 — Sculpting the sound (flow matching).**
+This is the generative step. The model starts with pure noise — like static — and gradually sculpts it into speech over 4 steps. The vocal fingerprint from Stage 1 steers the sculpting so the result sounds like *that specific voice* saying your new text. (Older systems needed 100+ steps; this runs at 150x realtime.)
+
+**Stage 4 — Converting math to audio (the vocoder).**
+The sculpting produces a spectrogram — a heatmap of frequencies over time, like sheet music made visible. Vocos converts that heatmap into actual audio using Fourier transforms, the same math used in EQ and audio analysis.
+
+The model never "records" a voice and plays it back. It learns an abstract description of a voice's character, then uses that description to *generate entirely new audio* that was never spoken. It's more like learning an accent than copying a recording — which is exactly why it raises the questions it does.
+
+### Where the training data came from
+
+ZipVoice was trained on the **Emilia dataset** — 101,000+ hours of speech assembled by a separate research team. The audio was scraped from the internet: video platforms, podcasts, talk shows, interviews, debates, sports commentary, and audiobooks. The expanded version used YouTube videos with CC-BY 3.0 licenses, meaning creators had explicitly allowed reuse with attribution. Six languages are covered: English, Mandarin Chinese, German, French, Japanese, and Korean.
+
+Raw internet audio is not optimized for training, so the researchers built a six-stage automated cleaning pipeline: standardize the format, strip background music, isolate individual speakers, chop into 3–30 second chunks, transcribe with Whisper, then filter out anything with poor audio quality or low language confidence. Only about **29% of the raw data survived** filtering.
+
+
+---
+
+## Credits
+
+- [LuxTTS](https://github.com/ysharma3501/LuxTTS) by Yatharth Sharma — voice cloning TTS wrapper
+- [ZipVoice](https://github.com/k2-fsa/ZipVoice) by Han Zhu, Wei Kang, et al. (Xiaomi Corp.) — underlying TTS model ([paper](https://arxiv.org/abs/2506.13053))
+- [Vocos](https://github.com/gemelo-ai/vocos) by Hubert Siuzdak — neural vocoder ([paper](https://arxiv.org/abs/2306.00814))
+- [Moonshine](https://github.com/usefulsensors/moonshine) via fastrtc — speech-to-text
+- [Ollama](https://ollama.com) — local LLM inference
+- Sahil Mhatre, teaching and research assistantance
+- Concept and direction by Althea Rao; implementation assisted by [Claude](https://claude.ai) (Anthropic)
+
+---
+
+## License
+
+**Code** — [Apache License 2.0](LICENSE). You are free to use, modify, and distribute the scripts and source code with attribution. This repo includes a patched copy of LuxTTS, which is also Apache 2.0.
+
+**Documentation and course materials** (this README, written explanations, lab instructions) — [Creative Commons Attribution 4.0 International (CC-BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt with attribution.

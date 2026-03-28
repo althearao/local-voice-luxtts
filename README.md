@@ -161,7 +161,35 @@ That's the only change required.
 
 ## Running
 
-Make sure your virtual environment is active (`source .venv/bin/activate` on Mac, `.venv\Scripts\activate` on Windows) before running.
+Every time you come back to use this project, follow these steps to get started.
+
+**Step 1 — Navigate into your project folder.**
+Open **Terminal** (Mac) or **PowerShell** (Windows), type `cd` followed by a space, then drag your project folder into the window. Press Enter.
+
+**Step 2 — Activate your virtual environment.**
+
+Mac:
+```bash
+source .venv/bin/activate
+```
+Windows (Command Prompt):
+```bat
+.venv\Scripts\activate
+```
+Windows (PowerShell):
+```powershell
+.venv\Scripts\Activate.ps1
+```
+You should see `(.venv)` appear at the start of your terminal line. That means it's active.
+
+**Step 3 — Make sure Ollama is running.**
+Open a separate terminal window and type:
+```bash
+ollama run your-model-name
+```
+Keep that window open in the background.
+
+**Step 4 — Run the script.**
 
 ### Terminal version (no browser needed)
 Open **Terminal** (Mac) or **PowerShell** (Windows) and type:

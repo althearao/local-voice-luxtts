@@ -25,7 +25,7 @@ This repo is developed for my course, How to be Human in the Age of AI, at SJSU.
 Open **Terminal** (Mac) or **PowerShell** (Windows) and type:
 
 ```bash
-ollama run mymodel
+ollama run //type your model name such as "john", "class_murmur"
 ```
 
 Hit enter. Keep Ollama running in the background while using the scripts.

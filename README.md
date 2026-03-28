@@ -1,6 +1,15 @@
-# Local Voice AI Agent
+# Local Voice AI Chatbot
 
-A fully local voice chatbot pipeline running on your own computer — no cloud, no API keys.
+A fully local voice chatbot pipeline running on your local machine — no cloud, no API keys. Everything runs on your own hardware.
+
+**Recommended system requirements:**
+- Apple Silicon Mac (M1/M2/M3/M4) with 16GB RAM — ~15 seconds per response
+- Windows PC with an NVIDIA GPU (4GB VRAM or more) and 16GB RAM
+- CPU-only machines will work but will be slower
+
+**Minimum:**
+- 8GB RAM
+- 10GB free disk space (for models and dependencies)
 
 ```
 Microphone → STT (Moonshine) → LLM (Ollama) → TTS (LuxTTS) → Speaker
@@ -133,7 +142,7 @@ uv pip install "fastrtc[stt]==0.0.19" ollama gradio soundfile sounddevice
 
 > **NVIDIA GPU (optional):** The scripts will automatically detect and use your GPU. No extra steps needed — torch installs CUDA support by default on Windows.
 
-> **No GPU:** CPU inference works fine, TTS generation will just be slower (~5–15 seconds per response instead of ~1–3 seconds).
+> **No GPU:** CPU inference works fine, but TTS generation will be slower than GPU-accelerated hardware.
 
 ---
 
